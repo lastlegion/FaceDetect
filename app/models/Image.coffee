@@ -161,7 +161,7 @@ module.exports = class Image extends Model
     scaled.height = @height*factor
     ctx = scaled.getContext("2d")
     ctx.drawImage(@canvas, 0, 0, @width*factor, @height*factor)
-    console.log("scale")
+
     return new Image(scaled)
      
   # Simple image resize. Also uses canvas to get this

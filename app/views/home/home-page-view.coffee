@@ -9,31 +9,31 @@ module.exports = class HomePageView extends View
     className: 'home-page'
     template: require './templates/home'
     box: null
-    faceDetect: null
+    camInput: null
 
-    initialize: =>
-
-        @camera = []
-        $(=>
-            console.log("Test")
-            @box = $(".home-page #box")
-
-            #@box.html(cvimg)
-            @faceDetect()
-            #console.log @box
-        )
-        return
-    count = 0
-    faceDetect: =>
-        console.log("faceDetect()")
-        container = $(".cvImage")
-
+    camInput: =>
         c = new Camera()
         c.init =>
+            display = new Display(box)
+            size = display.resolution()
             setInterval(=>
                 me = c.getImage()
-                me = me.scale(.5)
+                me = me.resize size[0], size[1]
                 me = me.saturate()
-                me.show(box)
+                dl = me.addDrawingLayer()
+                dl.noFill()
+                faces = me.getFaces()
+                for face in faces
+                    dl.rect(face.x, face.y ,face.width, face.height)
+                    console.log(face)
+                me.show(display)
             ,1000/60)
         return
+    initialize: =>
+        @camera = []
+        $(=>
+            @box = $("#box")
+            @camInput()
+        )
+        return
+        
